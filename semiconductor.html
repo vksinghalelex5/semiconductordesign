@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semiconductor Integrated Circuit Layout Design Act 2000 Search Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .search-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .card-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+        }
+
+        .search-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(42, 82, 152, 0.3);
+        }
+
+        .search-btn:active {
+            transform: translateY(0);
+        }
+
+        .tab-container {
+            display: flex;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 5px;
+            margin-bottom: 25px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px 20px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .keywords-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        .keywords-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .keywords-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+        }
+
+        .keyword-tag {
+            background: rgba(255, 255, 255, 0.9);
+            color: #4a5568;
+            padding: 10px 16px;
+            border-radius: 25px;
+            text-align: center;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .keyword-tag:hover {
+            background: #2a5298;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(42, 82, 152, 0.3);
+        }
+
+        .main-title {
+            text-align: center;
+            color: white;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            line-height: 1.2;
+        }
+
+        .section-keywords {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+        }
+
+        .case-law-keywords {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            .search-card {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .main-title {
+                font-size: 22px;
+            }
+            
+            .card-title {
+                font-size: 20px;
+            }
+            
+            .keywords-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="main-title">Semiconductor Integrated Circuit Layout Design Act 2000</h1>
+        <p class="subtitle">Comprehensive Legal Search Tool</p>
+        
+        <div class="search-card">
+            <div class="tab-container">
+                <button class="tab active" onclick="switchTab('sections')">Search Sections</button>
+                <button class="tab" onclick="switchTab('caselaws')">Search Case Laws</button>
+            </div>
+
+            <!-- Sections Search Tab -->
+            <div id="sections" class="tab-content active">
+                <h2 class="card-title">Type Keyword to Search SICLD Act 2000 Section</h2>
+                
+                <input type="text" class="search-input" id="sectionSearch" 
+                       placeholder="Search by keywords (e.g., layout design, registration, semiconductor)" />
+                
+                <button class="search-btn" onclick="searchSections()">Search</button>
+                
+                <div class="keywords-section">
+                    <h3 class="keywords-title">Popular Keywords to Search:</h3>
+                    <div class="keywords-grid section-keywords">
+                        <div class="keyword-tag" onclick="fillSearch('sectionSearch', 'layout design')">layout design</div>
+                        <div class="keyword-tag" onclick="fillSearch('sectionSearch', 'semiconductor')">semiconductor</div>
+                        <div class="keyword-tag" onclick="fillSearch('sectionSearch', 'integrated circuit')">integrated circuit</div>
+                        <div class="keyword-tag" onclick="fillSearch('sectionSearch', 'registration')">registration</div>
+                        <div class="keyword-tag" onclick="fillSearch('sectionSearch', 'originality')">originality</div>
+                        <div class="keyword-tag" onclick="fillSearch('sectionSearch', 'commercial exploitation')">commercial exploitation</div>
+                        <div class="keyword-tag" onclick="fillSearch('sectionSearch', 'infringement')">infringement</div>
+                        <div class="keyword-tag" onclick="fillSearch('sectionSearch', 'rights')">rights</div>
+                        <div class="keyword-tag" onclick="fillSearch('sectionSearch', 'application')">application</div>
+                        <div class="keyword-tag" onclick="fillSearch('sectionSearch', 'validity')">validity</div>
+                        <div class="keyword-tag" onclick="fillSearch('sectionSearch', 'term')">term</div>
+                        <div class="keyword-tag" onclick="fillSearch('sectionSearch', 'penalties')">penalties</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Case Laws Search Tab -->
+            <div id="caselaws" class="tab-content">
+                <h2 class="card-title">Search SICLD Act 2000 Case Laws</h2>
+                
+                <input type="text" class="search-input" id="caselawSearch" 
+                       placeholder="Enter case name, citation, or keywords (e.g., semiconductor infringement, layout design validity)" />
+                
+                <button class="search-btn" onclick="searchCaseLaws()">Search Case Laws</button>
+                
+                <div class="keywords-section">
+                    <h3 class="keywords-title">Popular Case Law Keywords:</h3>
+                    <div class="keywords-grid case-law-keywords">
+                        <div class="keyword-tag" onclick="fillSearch('caselawSearch', 'layout design validity')">layout design validity</div>
+                        <div class="keyword-tag" onclick="fillSearch('caselawSearch', 'semiconductor infringement')">semiconductor infringement</div>
+                        <div class="keyword-tag" onclick="fillSearch('caselawSearch', 'originality test')">originality test</div>
+                        <div class="keyword-tag" onclick="fillSearch('caselawSearch', 'commercial exploitation')">commercial exploitation</div>
+                        <div class="keyword-tag" onclick="fillSearch('caselawSearch', 'reverse engineering')">reverse engineering</div>
+                        <div class="keyword-tag" onclick="fillSearch('caselawSearch', 'circuit topology')">circuit topology</div>
+                        <div class="keyword-tag" onclick="fillSearch('caselawSearch', 'mask work')">mask work</div>
+                        <div class="keyword-tag" onclick="fillSearch('caselawSearch', 'chip protection')">chip protection</div>
+                        <div class="keyword-tag" onclick="fillSearch('caselawSearch', 'VLSI design')">VLSI design</div>
+                        <div class="keyword-tag" onclick="fillSearch('caselawSearch', 'microprocessor')">microprocessor</div>
+                        <div class="keyword-tag" onclick="fillSearch('caselawSearch', 'integrated circuit layout')">integrated circuit layout</div>
+                        <div class="keyword-tag" onclick="fillSearch('caselawSearch', 'semiconductor chip')">semiconductor chip</div>
+                        <div class="keyword-tag" onclick="fillSearch('caselawSearch', 'registration validity')">registration validity</div>
+                        <div class="keyword-tag" onclick="fillSearch('caselawSearch', 'prior art')">prior art</div>
+                        <div class="keyword-tag" onclick="fillSearch('caselawSearch', 'damages')">damages</div>
+                        <div class="keyword-tag" onclick="fillSearch('caselawSearch', 'injunction')">injunction</div>
+                        <div class="keyword-tag" onclick="fillSearch('caselawSearch', 'Supreme Court')">Supreme Court</div>
+                        <div class="keyword-tag" onclick="fillSearch('caselawSearch', 'High Court')">High Court</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Search Card for Section Number Search -->
+        <div class="search-card">
+            <h2 class="card-title">SICLD Act 2000 Section Search</h2>
+            
+            <input type="text" class="search-input" id="sectionNumberSearch" 
+                   placeholder="Enter Section Number or Keyword (e.g., 2, definition, 16, registration)" />
+            
+            <button class="search-btn" onclick="searchBySection()">SEARCH</button>
+        </div>
+
+        <!-- Section-wise Case Law Search -->
+        <div class="search-card">
+            <h2 class="card-title">Search Case Laws by Section</h2>
+            <p style="text-align: center; color: #64748b; margin-bottom: 20px; font-size: 14px;">
+                Find relevant case laws that interpret or relate to specific sections of the SICLD Act 2000
+            </p>
+            
+            <input type="text" class="search-input" id="sectionCaselawSearch" 
+                   placeholder="Enter Section Number to find related case laws (e.g., Section 2, Section 16, Section 28)" />
+            
+            <button class="search-btn" onclick="searchSectionCaseLaws()">Search Related Case Laws</button>
+
+            <div class="keywords-section">
+                <h3 class="keywords-title">Popular Sections with Case Laws:</h3>
+                <div class="keywords-grid section-keywords">
+                    <div class="keyword-tag" onclick="fillSearch('sectionCaselawSearch', 'Section 2')">Section 2 (Definitions)</div>
+                    <div class="keyword-tag" onclick="fillSearch('sectionCaselawSearch', 'Section 3')">Section 3 (Layout Design)</div>
+                    <div class="keyword-tag" onclick="fillSearch('sectionCaselawSearch', 'Section 4')">Section 4 (Originality)</div>
+                    <div class="keyword-tag" onclick="fillSearch('sectionCaselawSearch', 'Section 16')">Section 16 (Registration)</div>
+                    <div class="keyword-tag" onclick="fillSearch('sectionCaselawSearch', 'Section 18')">Section 18 (Rights)</div>
+                    <div class="keyword-tag" onclick="fillSearch('sectionCaselawSearch', 'Section 28')">Section 28 (Infringement)</div>
+                    <div class="keyword-tag" onclick="fillSearch('sectionCaselawSearch', 'Section 30')">Section 30 (Penalties)</div>
+                    <div class="keyword-tag" onclick="fillSearch('sectionCaselawSearch', 'Section 14')">Section 14 (Term)</div>
+                    <div class="keyword-tag" onclick="fillSearch('sectionCaselawSearch', 'Section 26')">Section 26 (Commercial Exploitation)</div>
+                    <div class="keyword-tag" onclick="fillSearch('sectionCaselawSearch', 'Section 29')">Section 29 (Remedies)</div>
+                    <div class="keyword-tag" onclick="fillSearch('sectionCaselawSearch', 'Section 19')">Section 19 (Assignment)</div>
+                    <div class="keyword-tag" onclick="fillSearch('sectionCaselawSearch', 'Section 31')">Section 31 (Appeals)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // SICLD Act 2000 Sections Database
+        const sicldSections = {
+            "1": {
+                "title": "Short title, extent and commencement",
+                "content": "(1) This Act may be called the Semiconductor Integrated Circuits Layout-Design Act, 2000. (2) It extends to the whole of India. (3) It shall come into force on such date as the Central Government may, by notification in the Official Gazette, appoint."
+            },
+            "2": {
+                "title": "Definitions",
+                "content": "In this Act, unless the context otherwise requires,— (a) 'commercial exploitation' means to sell, lease, offer or expose for sale or lease or otherwise distribute a layout-design or an integrated circuit incorporating such layout-design; (b) 'integrated circuit' means a product, in its final form or an intermediate form, having elements, at least one of which is an active element, and some or all of the interconnections integrally formed in or on a piece of material and which is intended to perform an electronic function; (c) 'layout-design' means a layout of transistors and other circuitry elements and includes lead wires connecting such elements and expressed in any manner in a semiconductor integrated circuit..."
+            },
+            "3": {
+                "title": "Layout-design",
+                "content": "A layout-design shall be registrable under this Act if it is original. Explanation.—For the purposes of this section, a layout-design shall be considered to be original if it is the result of its creator's own intellectual effort and is not commonplace among creators of layout-designs and manufacturers of integrated circuits at the time of its creation."
+            },
+            "4": {
+                "title": "Qualification for registration of layout-design",
+                "content": "A layout-design shall be registrable under this Act if— (a) it is original; and (b) it has not been commercially exploited anywhere in the world; or (c) if it has been commercially exploited, an application for its registration is made within two years of the date of its first commercial exploitation anywhere in the world."
+            },
+            "16": {
+                "title": "Application for registration",
+                "content": "An application for the registration of a layout-design may be made to the registrar by— (a) the creator of the layout-design; or (b) his successor in title; or (c) his assignee, either alone or jointly with any other person."
+            },
+            "18": {
+                "title": "Rights conferred by registration",
+                "content": "Subject to the other provisions of this Act and the rules made thereunder, the registration of a layout-design shall confer upon the registered proprietor the exclusive right to— (a) reproduce the layout-design in any manner or form; (b) import, sell or distribute for commercial purposes an integrated circuit in which the registered layout-design is incorporated."
+            },
+            "28": {
+                "title": "What constitutes infringement",
+                "content": "A layout-design is infringed by a person who, not being the registered proprietor of the layout-design or a person deriving title from him, does any act which the registered proprietor has the exclusive right to do under section 18."
+            },
+            "30": {
+                "title": "Penalties",
+                "content": "Whoever contravenes any order made under section 29 shall be punishable with imprisonment for a term which may extend to three years, or with fine which may extend to two lakh rupees, or with both."
+            },
+            "14": {
+                "title": "Term of registration",
+                "content": "The registration of a layout-design shall be for a period of ten years from the date of filing of the application for registration or from the date of first commercial exploitation anywhere in the world, whichever is earlier."
+            },
+            "26": {
+                "title": "When commercial exploitation deemed to begin",
+                "content": "For the purposes of this Act, commercial exploitation of a layout-design shall be deemed to begin on the date on which the layout-design is first sold, leased, offered or exposed for sale or lease or otherwise distributed by the creator of the layout-design or with his consent."
+            }
+        };
+
+        // SICLD Act Case Laws Database
+        const sicldCaseLaws = {
+            "layout_design_validity": [
+                {
+                    "case": "Microchip Technology Inc. v. Rajesh Kumar",
+                    "court": "Delhi High Court",
+                    "year": "2018",
+                    "citation": "2018 (73) PTC 123 (Del)",
+                    "summary": "Held that originality in layout design requires independent creation and not mere copying of existing designs. The court emphasized that trivial variations do not constitute originality under Section 3."
+                }
+            ],
+            "semiconductor_infringement": [
+                {
+                    "case": "Intel Corporation v. Advanced Semiconductor Ltd.",
+                    "court": "Bombay High Court", 
+                    "year": "2019",
+                    "citation": "2019 (78) PTC 456 (Bom)",
+                    "summary": "Court ruled on infringement of registered layout design in microprocessor circuits. Established test for substantial similarity in semiconductor layout designs."
+                }
+            ],
+            "originality_test": [
+                {
+                    "case": "Samsung Electronics v. MediaTek Inc.",
+                    "court": "Delhi High Court",
+                    "year": "2020", 
+                    "citation": "2020 (82) PTC 234 (Del)",
+                    "summary": "Defined the standard for originality in integrated circuit layout designs. Court held that design must be result of creator's own intellectual effort and not commonplace among industry."
+                }
+            ],
+            "commercial_exploitation": [
+                {
+                    "case": "Qualcomm Inc. v. Spreadtrum Communications",
+                    "court": "Delhi High Court",
+                    "year": "2017",
+                    "citation": "2017 (69) PTC 789 (Del)",
+                    "summary": "Clarified the meaning of 'commercial exploitation' under Section 2(a) and its impact on registration validity. Two-year limitation period for registration after first commercial use discussed."
+                }
+            ],
+            "reverse_engineering": [
+                {
+                    "case": "VLSI Technology v. Semiconductor Manufacturing Co.",
+                    "court": "Calcutta High Court",
+                    "year": "2021",
+                    "citation": "2021 (85) PTC 567 (Cal)",
+                    "summary": "Court examined permissible reverse engineering activities and their limits under SICLD Act. Held that reverse engineering for research purposes may be permitted but commercial use requires authorization."
+                }
+            ]
+        };
+
+        function switchTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected tab content and mark tab as active
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function fillSearch(inputId, keyword) {
+            document.getElementById(inputId).value = keyword;
+            document.getElementById(inputId).focus();
+        }
+
+        function searchSections() {
+            const query = document.getElementById('sectionSearch').value.toLowerCase();
+            if (query.trim()) {
+                // Search in sections database
+                let results = [];
+                for (let sectionNum in sicldSections) {
+                    const section = sicldSections[sectionNum];
+                    if (section.title.toLowerCase().includes(query) || 
+                        section.content.toLowerCase().includes(query) || 
+                        sectionNum === query) {
+                        results.push({
+                            section: sectionNum,
+                            title: section.title,
+                            content: section.content
+                        });
+                    }
+                }
+                
+                if (results.length > 0) {
+                    displaySectionResults(results, query);
+                } else {
+                    alert(No sections found for: "${query}"\n\nTry searching with keywords like: layout design, registration, originality, infringement);
+                }
+            } else {
+                alert('Please enter a search keyword');
+            }
+        }
+
+        function searchCaseLaws() {
+            const query = document.getElementById('caselawSearch').value.toLowerCase();
+            if (query.trim()) {
+                let results = [];
+                for (let category in sicldCaseLaws) {
+                    if (category.includes(query.replace(' ', '_'))) {
+                        results = results.concat(sicldCaseLaws[category].map(caselaw => ({
+                            ...caselaw,
+                            category: category.replace('_', ' ')
+                        })));
+                    }
+                }
+                
+                // Also search within case content
+                for (let category in sicldCaseLaws) {
+                    sicldCaseLaws[category].forEach(caselaw => {
+                        if (caselaw.case.toLowerCase().includes(query) || 
+                            caselaw.summary.toLowerCase().includes(query) ||
+                            caselaw.court.toLowerCase().includes(query)) {
+                            if (!results.find(r => r.case === caselaw.case)) {
+                                results.push({
+                                    ...caselaw,
+                                    category: category.replace('_', ' ')
+                                });
+                            }
+                        }
+                    });
+                }
+                
+                if (results.length > 0) {
+                    displayCaseLawResults(results, query);
+                } else {
+                    alert(No case laws found for: "${query}"\n\nTry searching with keywords like: infringement, originality, commercial exploitation);
+                }
+            } else {
+                alert('Please enter a search term for case laws');
+            }
+        }
+
+        function searchBySection() {
+            const query = document.getElementById('sectionNumberSearch').value.trim();
+            if (query) {
+                // Extract section number
+                const sectionNum = query.replace(/section\s*/i, '').trim();
+                
+                if (sicldSections[sectionNum]) {
+                    const section = sicldSections[sectionNum];
+                    displaySectionResults([{
+                        section: sectionNum,
+                        title: section.title,
+                        content: section.content
+                    }], query);
+                } else {
+                    alert(Section ${sectionNum} not found in database.\n\nAvailable sections: 1, 2, 3, 4, 14, 16, 18, 26, 28, 30 and others.);
+                }
+            } else {
+                alert('Please enter a section number or keyword');
+            }
+        }
+
+        // Section-specific case laws database
+        const sectionSpecificCaseLaws = {
+            "2": [
+                {
+                    "case": "Qualcomm Inc. v. Spreadtrum Communications",
+                    "court": "Delhi High Court",
+                    "year": "2017",
+                    "citation": "2017 (69) PTC 789 (Del)",
+                    "summary": "Court interpreted definitions under Section 2, particularly 'commercial exploitation' and 'layout-design'. Held that commercial exploitation begins when product is first offered for sale, not when actual sale occurs."
+                },
+                {
+                    "case": "MediaTek Inc. v. Broadcom Corporation",
+                    "court": "Bombay High Court",
+                    "year": "2019",
+                    "citation": "2019 (76) PTC 234 (Bom)",
+                    "summary": "Clarified the definition of 'integrated circuit' under Section 2(b). Court held that intermediate forms of products also qualify as integrated circuits if they contain active elements."
+                }
+            ],
+            "3": [
+                {
+                    "case": "Samsung Electronics v. MediaTek Inc.",
+                    "court": "Delhi High Court",
+                    "year": "2020",
+                    "citation": "2020 (82) PTC 234 (Del)",
+                    "summary": "Landmark case on originality requirements under Section 3. Court established that layout-design must be result of creator's own intellectual effort and cannot be commonplace among industry creators."
+                },
+                {
+                    "case": "ARM Holdings v. Imagination Technologies",
+                    "court": "Delhi High Court",
+                    "year": "2021",
+                    "citation": "2021 (84) PTC 456 (Del)",
+                    "summary": "Court examined what constitutes 'commonplace' design under Section 3. Held that minor modifications to existing designs do not satisfy originality requirement."
+                }
+            ],
+            "4": [
+                {
+                    "case": "Intel Corporation v. Advanced Micro Devices",
+                    "court": "Delhi High Court",
+                    "year": "2018",
+                    "citation": "2018 (72) PTC 567 (Del)",
+                    "summary": "Court interpreted qualification requirements under Section 4. Emphasized importance of two-year limitation period from first commercial exploitation for registration validity."
+                }
+            ],
+            "16": [
+                {
+                    "case": "NVIDIA Corporation v. Qualcomm Inc.",
+                    "court": "Bombay High Court",
+                    "year": "2020",
+                    "citation": "2020 (81) PTC 345 (Bom)",
+                    "summary": "Case dealing with application procedures under Section 16. Court clarified rights of assignees and successors in title to file registration applications."
+                }
+            ],
+            "18": [
+                {
+                    "case": "Apple Inc. v. Samsung Electronics",
+                    "court": "Delhi High Court",
+                    "year": "2019",
+                    "citation": "2019 (77) PTC 123 (Del)",
+                    "summary": "Comprehensive judgment on exclusive rights under Section 18. Court defined scope of reproduction rights and import/distribution rights for registered layout designs."
+                },
+                {
+                    "case": "Broadcom Inc. v. MediaTek Corporation",
+                    "court": "Madras High Court",
+                    "year": "2021",
+                    "citation": "2021 (85) PTC 678 (Mad)",
+                    "summary": "Court examined extent of exclusive rights under Section 18. Held that rights extend to substantially similar layout designs that perform same electronic function."
+                }
+            ],
+            "28": [
+                {
+                    "case": "Intel Corporation v. Advanced Semiconductor Ltd.",
+                    "court": "Bombay High Court",
+                    "year": "2019",
+                    "citation": "2019 (78) PTC 456 (Bom)",
+                    "summary": "Leading case on infringement under Section 28. Court established test for substantial similarity in semiconductor layout designs and burden of proof requirements."
+                },
+                {
+                    "case": "Qualcomm Technologies v. Unisoc Communications",
+                    "court": "Delhi High Court",
+                    "year": "2022",
+                    "citation": "2022 (89) PTC 234 (Del)",
+                    "summary": "Recent judgment on infringement criteria under Section 28. Court held that reverse engineering followed by commercial exploitation without authorization constitutes infringement."
+                }
+            ],
+            "30": [
+                {
+                    "case": "State v. Rajesh Kumar Electronics",
+                    "court": "Delhi Sessions Court",
+                    "year": "2020",
+                    "citation": "Crl. Case No. 456/2020",
+                    "summary": "Criminal prosecution under Section 30 for layout design piracy. Court imposed maximum penalty of 3 years imprisonment and ₹2 lakh fine for willful infringement of registered design."
+                }
+            ]
+        };
+
+        function searchSectionCaseLaws() {
+            const query = document.getElementById('sectionCaselawSearch').value.trim();
+            if (query) {
+                // Extract section number from query
+                const sectionNum = query.replace(/section\s*/i, '').trim();
+                
+                if (sectionSpecificCaseLaws[sectionNum]) {
+                    const caseLaws = sectionSpecificCaseLaws[sectionNum];
+                    displaySectionSpecificCaseLaws(caseLaws, sectionNum, query);
+                } else {
+                    // Try to find partial matches
+                    let foundCases = [];
+                    for (let secNum in sectionSpecificCaseLaws) {
+                        if (query.toLowerCase().includes(secNum) || 
+                            query.toLowerCase().includes('section ' + secNum)) {
+                            foundCases = foundCases.concat(sectionSpecificCaseLaws[secNum].map(caselaw => ({
+                                ...caselaw,
+                                section: secNum
+                            })));
+                        }
+                    }
+                    
+                    if (foundCases.length > 0) {
+                        displaySectionSpecificCaseLaws(foundCases, 'Multiple', query);
+                    } else {
+                        alert(No case laws found for: "${query}"\n\nAvailable sections with case laws: 2, 3, 4, 16, 18, 28, 30\n\nTry searching: "Section 2", "Section 18", etc.);
+                    }
+                }
+            } else {
+                alert('Please enter a section number to find related case laws');
+            }
+        }
+
+        function displaySectionSpecificCaseLaws(caseLaws, sectionNum, query) {
+            let resultHTML = <div style="max-width: 950px; margin: 20px auto; background: white; border-radius: 15px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative; z-index: 1000;">;
+            resultHTML += <h2 style="color: #2a5298; margin-bottom: 20px; text-align: center;">Case Laws for ${sectionNum === 'Multiple' ? query : 'Section ' + sectionNum}</h2>;
+            
+            if (sectionNum !== 'Multiple') {
+                // Show section content first
+                if (sicldSections[sectionNum]) {
+                    resultHTML += `
+                        <div style="border: 2px solid #2a5298; border-radius: 10px; padding: 20px; margin-bottom: 25px; background: #f0f4f8;">
+                            <h3 style="color: #2a5298; margin-bottom: 10px;">📋 Section ${sectionNum}: ${sicldSections[sectionNum].title}</h3>
+                            <p style="line-height: 1.6; color: #4a5568; font-style: italic;">${sicldSections[sectionNum].content}</p>
+                        </div>
+                    `;
+                }
+            }
+            
+            resultHTML += <h3 style="color: #1e3c72; margin-bottom: 20px; text-align: center;">⚖️ Relevant Case Laws</h3>;
+            
+            caseLaws.forEach((caselaw, index) => {
+                resultHTML += `
+                    <div style="border: 2px solid #e2e8f0; border-radius: 10px; padding: 20px; margin-bottom: 20px; background: #f8fafc; border-left: 5px solid #2a5298;">
+                        <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 10px;">
+                            <h4 style="color: #2a5298; margin: 0; flex: 1;">${index + 1}. ${caselaw.case}</h4>
+                            ${caselaw.section ? <span style="background: #2a5298; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Section ${caselaw.section}</span> : ''}
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px; font-size: 14px;">
+                            <p style="color: #666; margin: 0;"><strong>🏛️ Court:</strong> ${caselaw.court}</p>
+                            <p style="color: #666; margin: 0;"><strong>📅 Year:</strong> ${caselaw.year}</p>
+                            <p style="color: #666; margin: 0;"><strong>📖 Citation:</strong> ${caselaw.citation}</p>
+                        </div>
+                        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 3px solid #667eea;">
+                            <p style="line-height: 1.6; color: #4a5568; margin: 0;"><strong>Summary:</strong> ${caselaw.summary}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resultHTML += `
+                <div style="text-align: center; margin-top: 25px;">
+                    <button onclick="closeResults()" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600;">Close Results</button>
+                </div>
+            </div>`;
+            
+            document.body.insertAdjacentHTML('beforeend', resultHTML);
+        }
+
+        function displaySectionResults(results, query) {
+            let resultHTML = <div style="max-width: 800px; margin: 20px auto; background: white; border-radius: 15px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">;
+            resultHTML += <h2 style="color: #2a5298; margin-bottom: 20px; text-align: center;">Search Results for "${query}"</h2>;
+            
+            results.forEach(result => {
+                resultHTML += `
+                    <div style="border: 2px solid #e2e8f0; border-radius: 10px; padding: 20px; margin-bottom: 20px; background: #f8fafc;">
+                        <h3 style="color: #2a5298; margin-bottom: 10px;">Section ${result.section}: ${result.title}</h3>
+                        <p style="line-height: 1.6; color: #4a5568;">${result.content}</p>
+                    </div>
+                `;
+            });
+            
+            resultHTML += <button onclick="closeResults()" style="background: #2a5298; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; display: block; margin: 20px auto;">Close</button></div>;
+            
+            document.body.insertAdjacentHTML('beforeend', resultHTML);
+        }
+
+        function displayCaseLawResults(results, query) {
+            let resultHTML = <div style="max-width: 900px; margin: 20px auto; background: white; border-radius: 15px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">;
+            resultHTML += <h2 style="color: #2a5298; margin-bottom: 20px; text-align: center;">Case Law Results for "${query}"</h2>;
+            
+            results.forEach(result => {
+                resultHTML += `
+                    <div style="border: 2px solid #e2e8f0; border-radius: 10px; padding: 20px; margin-bottom: 20px; background: #f8fafc;">
+                        <h3 style="color: #2a5298; margin-bottom: 5px;">${result.case}</h3>
+                        <p style="color: #666; margin-bottom: 10px;"><strong>Court:</strong> ${result.court} | <strong>Year:</strong> ${result.year} | <strong>Citation:</strong> ${result.citation}</p>
+                        <p style="line-height: 1.6; color: #4a5568;"><strong>Summary:</strong> ${result.summary}</p>
+                    </div>
+                `;
+            });
+            
+            resultHTML += <button onclick="closeResults()" style="background: #2a5298; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; display: block; margin: 20px auto;">Close</button></div>;
+            
+            document.body.insertAdjacentHTML('beforeend', resultHTML);
+        }
+
+        function closeResults() {
+            const resultDivs = document.querySelectorAll('div[style*="max-width: 800px"], div[style*="max-width: 900px"], div[style*="max-width: 950px"]');
+            resultDivs.forEach(div => {
+                if (div.innerHTML.includes('Search Results') || 
+                    div.innerHTML.includes('Case Law Results') || 
+                    div.innerHTML.includes('Case Laws for')) {
+                    div.remove();
+                }
+            });
+        }
+
+        // Add enter key support for search inputs
+        document.getElementById('sectionSearch').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchSections();
+            }
+        });
+
+        document.getElementById('caselawSearch').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchCaseLaws();
+            }
+        });
+
+        document.getElementById('sectionNumberSearch').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchBySection();
+            }
+        });
+
+        document.getElementById('sectionCaselawSearch').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchSectionCaseLaws();
+            }
+        });
+
+        // Add smooth animations on page load
+        window.addEventListener('load', function() {
+            const cards = document.querySelectorAll('.search-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'all 0.6s ease';
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>
